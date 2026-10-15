@@ -1,0 +1,28 @@
+{
+  "labels": {
+    "title": "=== dev-env-upgrade 环境体检 ===",
+    "component": "组件",
+    "local": "本机",
+    "latest": "最新",
+    "status": "状态",
+    "note": "备注",
+    "upToDate": "已是最新",
+    "upgradable": "可升级",
+    "majorBehind": "落后较多",
+    "unknown": "查询失败",
+    "queryFailedHint": "主口径失败，AI 会话可用 web_fetch 兜底",
+    "repoLine": "Maven 本地仓库",
+    "settingsLine": "生效 settings.xml",
+    "notFound": "未找到",
+    "repoSize": "仓库体积",
+    "files": "文件数",
+    "offlineNote": "离线模式：跳过联网查询"
+  },
+  "repos": {
+    "jq":   { "owner": "jqlang",          "name": "jq" },
+    "tokei":{ "owner": "XAMPPRocky",      "name": "tokei" },
+    "xh":   { "owner": "ducaale",         "name": "xh" },
+    "git":  { "owner": "git-for-windows", "name": "git" },
+    "gh":   { "owner": "cli",             "name": "cli" }
+  }
+}
