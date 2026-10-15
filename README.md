@@ -36,8 +36,9 @@ JDK / Maven / IDEA / Node / Python / Go / Rust / CLI 工具链的版本体检、
 一键盘查（**当前用户**任意终端；垫片在 User PATH 而非 Machine PATH，换账户敲不到）：
 
 ```powershell
-envcheck   # 全量：本机版本 vs 最新版对照表
-mvninfo    # 单行输出 Maven 本地仓库路径（含生效 settings.xml 判定）
+envcheck        # 全量：本机版本 vs 最新版对照表
+mvninfo         # 单行输出 Maven 本地仓库路径（含生效 settings.xml 判定）
+mvninfo -Json   # 同上，结构化输出：repo / source / conf / exists
 ```
 
 ## 文件结构

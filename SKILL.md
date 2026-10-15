@@ -125,8 +125,11 @@ powershell -File F:\idea-workspase-skills\dev-env-upgrade\scripts\check-versions
 # 只输出 Maven 本地仓库路径（单行；垫片 mvninfo 在当前用户任意终端可敲）
 ... -Repo
 
+# -Repo 也能出 JSON（repo/source/conf/exists，配 -Size 加 bytes/files）
+... -Repo -Json
+
 # JSON 输出 / 只查本机不联网 / 调超时
 ... -Json / -Offline / -TimeoutSec 30
 ```
 
-垫片（`C:\Users\Administrator\.local\bin`，已在用户 PATH）：`mvninfo.cmd` → `-Repo`；`envcheck.cmd` → 全量体检。
+垫片（`C:\Users\Administrator\.local\bin`，已在用户 PATH）：`mvninfo.cmd` → `-Repo`（`mvninfo -Json` 出结构化结果）；`envcheck.cmd` → 全量体检。
