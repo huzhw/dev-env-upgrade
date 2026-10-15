@@ -161,6 +161,26 @@ if ($Repo) {
     }
   }
   if (-not $picked) { $picked = Join-Path $env:USERPROFILE '.m2\repository'; $src = 'default (no localRepository declared)' }
+  # -Repo -Json: structured output for scripts (must return BEFORE the text
+  # output below, since this branch returns early and never reaches the
+  # -Json collector at the bottom of the file).
+  if ($Json) {
+    $obj = [ordered]@{
+      repo   = $picked
+      source = $src
+      conf   = $conf
+      exists = (Test-Path $picked)
+    }
+    if ($Size -and (Test-Path $picked)) {
+      $n = 0L; $b = 0L
+      foreach ($f in [IO.Directory]::EnumerateFiles($picked, '*', [IO.SearchOption]::AllDirectories)) {
+        $n++; try { $b += ([IO.FileInfo]$f).Length } catch {}
+      }
+      $obj['bytes'] = $b; $obj['files'] = $n
+    }
+    Write-Output ($obj | ConvertTo-Json -Depth 2)
+    return
+  }
   Write-Output ("repo   = {0}" -f $picked)
   Write-Output ("source = {0}" -f $src)
   if ($conf) { Write-Output ("conf   = {0}" -f $conf) }
