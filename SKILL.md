@@ -41,7 +41,7 @@ motto: "升级不难，难的是知道哪个能升、哪个升了会炸——先
 已知陷阱：
 - **IDEA 版本只认 `build.txt` / `product-info.json`**，目录名与注册表 DisplayName 都是安装时的旧值（自动补丁升级不改名）。
 - **`MAVEN_HOME` 老进程看不到**：脚本必须注册表兜底读 `HKLM:\...\Session Manager\Environment`。
-- `mvn` 不在 PATH（只有 `%MAVEN_HOME%\bin` 在注册表 PATH），显式调 `$MAVEN_HOME\bin\mvn.cmd`。
+- `mvn` 在**当次会话**常解析不到（进程 PATH 是环境变量生效前继承的旧值）；**新开终端可直敲 `mvn`**（注册表 Machine PATH 含 `%MAVEN_HOME%\bin`，类型 ExpandString）。拿不准就显式调 `$MAVEN_HOME\bin\mvn.cmd`。
 - `where node` 第一条是 DSH 自带运行时 `...\dsh-tauri\runtime\node.exe`，不是 nvm 的。
 - `nvm list` 非交互无输出；读 `F:\nvm` 目录 + `F:\nodejs` 链接目标即可。
 
@@ -122,7 +122,7 @@ powershell -File F:\idea-workspase-skills\dev-env-upgrade\scripts\check-versions
 # 只看某几类
 ... -Only Jdk,Maven
 
-# 只输出 Maven 本地仓库路径（单行，并入原 mvninfo 方案；任意终端可敲 mvninfo）
+# 只输出 Maven 本地仓库路径（单行；垫片 mvninfo 在当前用户任意终端可敲）
 ... -Repo
 
 # JSON 输出 / 只查本机不联网 / 调超时

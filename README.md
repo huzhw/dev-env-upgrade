@@ -33,7 +33,7 @@ JDK / Maven / IDEA / Node / Python / Go / Rust / CLI 工具链的版本体检、
 
 触发词（任选）：`升级JDK`、`升级Maven`、`环境体检`、`版本体检`、`还有啥能升级`、`查最新版本`、`升级IDEA`、`环境盘点`、`dev-env-upgrade`、`jdk1.8升到最新`、`mvninfo`。
 
-一键盘查（任意终端）：
+一键盘查（**当前用户**任意终端；垫片在 User PATH 而非 Machine PATH，换账户敲不到）：
 
 ```powershell
 envcheck   # 全量：本机版本 vs 最新版对照表
