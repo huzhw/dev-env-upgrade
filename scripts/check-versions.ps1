@@ -74,6 +74,16 @@ function Invoke-HttpText {
     return [string]$r.Content
   } catch { return $null }
 }
+function Invoke-HttpTextAlt {
+  # Some endpoints (e.g. data.services.jetbrains.com) are reachable without
+  # an explicit proxy but return 403 through the policy proxy -> call this
+  # first, fall back to Invoke-HttpText when it yields nothing.
+  param([string]$Url)
+  try {
+    $r = Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec $TimeoutSec -Headers @{ 'User-Agent' = 'dev-env-upgrade' } -ErrorAction Stop
+    return [string]$r.Content
+  } catch { return $null }
+}
 function Invoke-GhLatest {
   param([string]$Repo)   # owner/name
   try {
@@ -99,7 +109,11 @@ function Test-GtVer([string]$a, [string]$b) {
 }
 function Get-NormalVer([string]$v) {
   # strip common prefixes: v, go, node-
+  # also drop any trailing qualifier such as "2026.2.3 (262.10968.63)"
+  # so that comparisons never see the build number.
   if (-not $v) { return $null }
+  $v = ($v -replace '\s.*$', '')
+  $v = ($v -replace '\(.*$', '')
   return ($v -replace '^(v|go|node-)+', '')
 }
 function Get-JdkNum([string]$ver) {
@@ -262,7 +276,20 @@ if (& $want 'Ide') {
     }
   }
   $latest = $null; $note = 'version from product-info.json (dir name is stale!)'
-  if (-not $Offline) { $note = $note + ' | latest: data.services.jetbrains.com blocked -> use web_fetch' }
+  if (-not $Offline) {
+    # data.services.jetbrains.com is reachable DIRECT (no proxy) but returns
+    # 403 through the policy proxy -> try direct first, then proxied.
+    $t = Invoke-HttpTextAlt 'https://data.services.jetbrains.com/products/releases?code=IIU&latest=true&type=release'
+    if (-not $t) { $t = Invoke-HttpText 'https://data.services.jetbrains.com/products/releases?code=IIU&latest=true&type=release' }
+    if ($t) {
+      try {
+        $j = $t | ConvertFrom-Json
+        $rel = $j.IIU | Select-Object -First 1
+        if ($rel -and $rel.version) { $latest = [string]$rel.version }
+      } catch {}
+    }
+    if (-not $latest) { $note = $note + ' | latest query failed -> use web_fetch' }
+  }
   Get-StatusLocal 'IDEA' $(if ($lv -and $bn) { "$lv ($bn)" } else { $lv }) $latest $note
 }
 
