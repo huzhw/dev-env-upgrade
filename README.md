@@ -16,6 +16,8 @@ JDK / Maven / IDEA / Node / Python / Go / Rust / CLI 工具链的版本体检、
 - [reread-rules](https://github.com/huzhw/reread-rules-skill)：重载 CLAUDE.md / AGENTS.md 规则
 - [coding-rules](https://github.com/huzhw/coding-rules)：编码规则库（独立仓库，非 skill）
 - [daily-report-panel](https://github.com/huzhw/daily-report-panel)：日报管家（关联仓库，非 skill，自动合并/导出/发件）
+- [prd](https://github.com/huzhw/prd-skill)：PRD 生成器（一句话需求→结构化需求文档）
+- [ralph](https://github.com/huzhw/ralph-skill)：PRD 转 prd.json（Ralph 自主执行格式）
 
 ---
 
@@ -60,7 +62,7 @@ dev-env-upgrade/
 
 ## 安装
 
-五端已在消费端目录建好 Junction（CodeBuddy 经 `.claude` 复用，无独立链接；本仓库为唯一数据源）：
+五端已在消费端目录建好 Junction（本仓库为唯一数据源）：
 
 ```bash
 C:\Users\Administrator\.claude\skills\dev-env-upgrade
