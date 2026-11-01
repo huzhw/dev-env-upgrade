@@ -23,7 +23,7 @@
 
 `.local\bin` 里的 `mvninfo.cmd` / `envcheck.cmd` 是**符号链接**，指回本仓 `scripts\mvninfo.cmd` / `scripts\envcheck.cmd`：`.local\bin` 在 C: 盘、本仓在 F: 盘，跨卷做不了硬链接，只能用符号链接，这样改仓内脚本 PATH 立即生效、不会留下第二份副本。
 
-体检/重建走 `scripts\install-shims.ps1`（不带 `-Apply` 只体检，退出码 1 表示有问题）。`sync-check.ps1 -Fix` 只管上面的目录 junction，不会重建垫片。
+体检/重建走 `agent-config-sync-check\scripts\install-shims.ps1`（垫片表登记在 `sync-config.json` 的 `pathShims`，不带 `-Apply` 只体检，退出码 1 表示有问题）。`sync-check.ps1` 第 14 项检查一起看管垫片，`-Fix` 时由它调用同一个安装脚本；上面的目录 junction 仍按本页方式管。
 
 ## 检查是否正常
 

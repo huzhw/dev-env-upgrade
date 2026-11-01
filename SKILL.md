@@ -132,6 +132,6 @@ powershell -File F:\idea-workspase-skills\dev-env-upgrade\scripts\check-versions
 ... -Json / -Offline / -TimeoutSec 30
 ```
 
-垫片（`C:\Users\Administrator\.local\bin`，已在用户 PATH，是**符号链接**指回本仓 `scripts\mvninfo.cmd` / `scripts\envcheck.cmd`）：`mvninfo.cmd` → `-Repo`（`mvninfo -Json` 出结构化结果）；`envcheck.cmd` → 全量体检。改仓内脚本，PATH 立即跟着变；C: 与 F: 跨卷做不了硬链接（`mklink /H` 报"系统无法将文件移到不同的磁盘驱动器"），只能用符号链接。体检/重建走 `scripts\install-shims.ps1`（不带 `-Apply` 只体检，退出码 1 表示有问题）。
+垫片（`C:\Users\Administrator\.local\bin`，已在用户 PATH，是**符号链接**指回本仓 `scripts\mvninfo.cmd` / `scripts\envcheck.cmd`）：`mvninfo.cmd` → `-Repo`（`mvninfo -Json` 出结构化结果）；`envcheck.cmd` → 全量体检。改仓内脚本，PATH 立即跟着变；C: 与 F: 跨卷做不了硬链接（`mklink /H` 报"系统无法将文件移到不同的磁盘驱动器"），只能用符号链接。体检/重建走 `agent-config-sync-check\scripts\install-shims.ps1`（垫片表登记在 `sync-config.json` 的 `pathShims`，不带 `-Apply` 只体检，退出码 1 表示有问题）；`sync-check.ps1` 第 14 项检查一起看管垫片，`-Fix` 时由它调用同一个安装脚本。
 
 最后修改：2026-11-01

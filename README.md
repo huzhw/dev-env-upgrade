@@ -56,7 +56,6 @@ dev-env-upgrade/
 ├── scripts/
 │   ├── check-versions.ps1       ← 一键体检脚本（纯 ASCII，单点失败不中断）
 │   ├── versions-config.json     ← 查询端点与标签（中文外置，UTF-8）
-│   ├── install-shims.ps1        ← PATH 垫片体检/重建（纯 ASCII，默认只读）
 │   ├── mvninfo.cmd              ← 垫片源（转发 -Repo）
 │   └── envcheck.cmd             ← 垫片源（转发全量体检）
 └── references/
@@ -77,14 +76,14 @@ dev-env-upgrade/
 
 为什么不是硬链接：`.local\bin` 在 C: 盘、仓库在 F: 盘，`mklink /H` 会报"系统无法将文件移到不同的磁盘驱动器"。用符号链接，改仓内脚本 PATH 立刻生效，不存在第二份副本各走各的。
 
-一条命令体检 / 重建（幂等：链接正确的原地不动；旧拷贝先改名成 `.bak-<时间戳>` 再替换；建链前先在同目录建探针链接验权限，没权限就一个都不动）：
+一条命令体检 / 重建（脚本在同步守卫仓，垫片表登记在 `sync-config.json` 的 `pathShims`，检查与修复读同一份表；幂等：链接正确的原地不动；旧拷贝先改名成 `.bak-<时间戳>` 再替换；建链前先在同目录建探针链接验权限，没权限就一个都不动）：
 
 ```powershell
 # 只体检（有问题退出码 1，可直接当门禁用）
-powershell -NoProfile -ExecutionPolicy Bypass -File "F:\idea-workspase-skills\dev-env-upgrade\scripts\install-shims.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "F:\idea-workspase-skills\agent-config-sync-check\scripts\install-shims.ps1"
 
 # 修：缺的补建、指向错的改指、旧拷贝备份后换链接
-powershell -NoProfile -ExecutionPolicy Bypass -File "F:\idea-workspase-skills\dev-env-upgrade\scripts\install-shims.ps1" -Apply
+powershell -NoProfile -ExecutionPolicy Bypass -File "F:\idea-workspase-skills\agent-config-sync-check\scripts\install-shims.ps1" -Apply
 
 # 只处理一个：-Only mvninfo / envcheck / fsend
 ```
