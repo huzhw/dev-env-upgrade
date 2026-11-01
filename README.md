@@ -56,6 +56,7 @@ dev-env-upgrade/
 ├── scripts/
 │   ├── check-versions.ps1       ← 一键体检脚本（纯 ASCII，单点失败不中断）
 │   ├── versions-config.json     ← 查询端点与标签（中文外置，UTF-8）
+│   ├── install-shims.ps1        ← PATH 垫片体检/重建（纯 ASCII，默认只读）
 │   ├── mvninfo.cmd              ← 垫片源（转发 -Repo）
 │   └── envcheck.cmd             ← 垫片源（转发全量体检）
 └── references/
@@ -63,6 +64,38 @@ dev-env-upgrade/
 ```
 
 ## 安装
+
+### PATH 垫片（符号链接）
+
+`C:\Users\Administrator\.local\bin` 里的三个 `.cmd` 都是**符号链接**，指回仓库真身：
+
+| 垫片 | 指向 |
+|------|------|
+| `mvninfo.cmd` | `F:\idea-workspase-skills\dev-env-upgrade\scripts\mvninfo.cmd` |
+| `envcheck.cmd` | `F:\idea-workspase-skills\dev-env-upgrade\scripts\envcheck.cmd` |
+| `fsend.cmd` | `F:\idea-workspase-skills\ssh-transfer\scripts\fsend.cmd` |
+
+为什么不是硬链接：`.local\bin` 在 C: 盘、仓库在 F: 盘，`mklink /H` 会报"系统无法将文件移到不同的磁盘驱动器"。用符号链接，改仓内脚本 PATH 立刻生效，不存在第二份副本各走各的。
+
+一条命令体检 / 重建（幂等：链接正确的原地不动；旧拷贝先改名成 `.bak-<时间戳>` 再替换；建链前先在同目录建探针链接验权限，没权限就一个都不动）：
+
+```powershell
+# 只体检（有问题退出码 1，可直接当门禁用）
+powershell -NoProfile -ExecutionPolicy Bypass -File "F:\idea-workspase-skills\dev-env-upgrade\scripts\install-shims.ps1"
+
+# 修：缺的补建、指向错的改指、旧拷贝备份后换链接
+powershell -NoProfile -ExecutionPolicy Bypass -File "F:\idea-workspase-skills\dev-env-upgrade\scripts\install-shims.ps1" -Apply
+
+# 只处理一个：-Only mvninfo / envcheck / fsend
+```
+
+手工重建单个（等价做法，`mklink` 需要管理员权限或开启开发者模式）：
+
+```bat
+mklink "C:\Users\Administrator\.local\bin\mvninfo.cmd" "F:\idea-workspase-skills\dev-env-upgrade\scripts\mvninfo.cmd"
+```
+
+### 五端 Junction
 
 五端已在消费端目录建好 Junction（本仓库为唯一数据源）：
 
@@ -77,3 +110,5 @@ C:\Users\Administrator\.qoder-cn\skills\dev-env-upgrade
 ## 许可
 
 MIT
+
+最后修改：2026-11-01
